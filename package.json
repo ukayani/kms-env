@@ -1,0 +1,47 @@
+{
+  "name": "kms-env",
+  "version": "0.1.0",
+  "description": "A tool for encrypting and decrypting env vars using AWS KMS",
+  "main": "index.js",
+  "bin": {
+    "kms-env": "bin/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ukayani/kms-env.git"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "kms",
+    "deploy",
+    "deployment",
+    "aws",
+    "docker",
+    "ecs"
+  ],
+  "author": "ukayani",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^3.3.0",
+    "gulp": "^3.9.0",
+    "gulp-istanbul": "^0.10.0",
+    "gulp-eslint": "^2.1.0",
+    "gulp-mocha": "^2.1.3",
+    "gulp-util": "^3.0.6",
+    "jscs-stylish": "^0.3.1",
+    "jshint-stylish": "^2.0.1",
+    "mocha": "^2.3.3",
+    "sinon": "^1.17.0",
+    "supertest": "^1.1.0"
+  },
+  "dependencies": {
+    "assert-plus": "^0.1.5",
+    "aws-sdk": "^2.9.0",
+    "chalk": "^1.1.3",
+    "commander": "^2.9.0",
+    "lodash": "^4.17.4",
+    "mz": "^2.4.0"
+  }
+}
