@@ -24,16 +24,18 @@ function exitIfFailed(fn) {
    }
 }
 
+const exitOnFailedPromise = (promise) => promise.catch(err => {
+        console.error(chalk.red(err.message));
+        showHelp();
+        process.exit(1);
+    });
+
 const bold = chalk.bold.white;
 
-const getParams = (options) => {
+const getOptions = (options) => {
     const accessKey = options.accessKeyId;
     const secretKey = options.secretAccessKey;
     const region = options.region;
-
-    // assert.string(service, 'service is required');
-    // assert.string(cluster, 'cluster is required');
-    // assert.string(image, 'image is required');
 
     return {
         accessKeyId: accessKey,
@@ -42,18 +44,37 @@ const getParams = (options) => {
     };
 };
 
-const run = async(params) => {
+const runInit = async(keyId, file, options) => {
+
+    assert.string(keyId, 'Must provide keyId');
+    assert.string(file, 'Must provide file');
 
     const config = {
         apiVersion: '2014-11-01',
-        accessKeyId: params.accessKeyId,
-        secretAccessKey: params.secretAccessKey,
-        region: params.region
+        accessKeyId: options.accessKeyId,
+        secretAccessKey: options.secretAccessKey,
+        region: options.region
     };
     const client = new AWS.KMS(config);
 
     const kmsEnv = KMSEnv.create(client);
-    await kmsEnv.init('alias/ecs', path.resolve('./test.env'));
+    await kmsEnv.init(keyId, path.resolve(file));
+};
+
+const runAdd = async(entry, file, options) => {
+    assert.string(file, 'Must provide file');
+    assert.string(entry, 'Must provide pair');
+
+    const config = {
+        apiVersion: '2014-11-01',
+        accessKeyId: options.accessKeyId,
+        secretAccessKey: options.secretAccessKey,
+        region: options.region
+    };
+    const client = new AWS.KMS(config);
+
+    const kmsEnv = KMSEnv.create(client);
+    await kmsEnv.add(entry, path.resolve(file));
 };
 
 program
@@ -63,11 +84,19 @@ program
     .option('-r, --region <region>', 'AWS Region. Env: $AWS_DEFAULT_REGION');
 
 program
-    .command('encrypt [key] [data]')
-    .description('Encrypt environment variables and add to a file')
-    .action((key, data) => {
-        const params = exitIfFailed(getParams, program);
-        run(params);
+    .command('init [keyId] [file]')
+    .description('Initialize an environment variable file with provided CMK Id')
+    .action((keyId, file) => {
+        const options = exitIfFailed(getOptions, program);
+        exitOnFailedPromise(runInit(keyId, file, options));
+    });
+
+program
+    .command('add [entry] [file]')
+    .description('Adds environment variable to file after encrypting the value')
+    .action((entry, file) => {
+        const options = exitIfFailed(getOptions, program);
+        exitOnFailedPromise(runAdd(entry, file, options));
     });
 
 program.parse(process.argv);
