@@ -65,11 +65,11 @@ const runInit = async(client, keyId, file) => {
     await client.init(keyId, path.resolve(file));
 };
 
-const runAdd = async(client, entry, file) => {
+const runAdd = async(client, file, entries) => {
     assert.string(file, 'Must provide file');
-    assert.string(entry, 'Must provide pair');
+    assert.bool(Array.isArray(entries), 'Must provide entries to encrypt');
 
-    await client.add(entry, path.resolve(file));
+    await client.add(path.resolve(file), entries);
 };
 
 const runDecrypt = async(client) => {
@@ -98,11 +98,11 @@ program
     });
 
 program
-    .command('add [entry] [file]')
+    .command('add [file] [entries...]')
     .description('Adds environment variable to file after encrypting the value')
-    .action((entry, file) => {
+    .action((file, entries) => {
         const client = createClient(program);
-        exitOnFailedPromise(runAdd(client, entry, file));
+        exitOnFailedPromise(runAdd(client, file, entries));
     });
 
 program
