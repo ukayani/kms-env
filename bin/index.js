@@ -44,65 +44,42 @@ const getOptions = (options) => {
     };
 };
 
-const runInit = async(keyId, file, options) => {
+const createClient = (program) => {
+    const options = exitIfFailed(getOptions, program);
+
+    const config = {
+        apiVersion: '2014-11-01',
+        accessKeyId: options.accessKeyId,
+        secretAccessKey: options.secretAccessKey,
+        region: options.region
+    };
+    const client = new AWS.KMS(config);
+    return KMSEnv.create(client);
+};
+
+const runInit = async(client, keyId, file) => {
 
     assert.string(keyId, 'Must provide keyId');
     assert.string(file, 'Must provide file');
 
-    const config = {
-        apiVersion: '2014-11-01',
-        accessKeyId: options.accessKeyId,
-        secretAccessKey: options.secretAccessKey,
-        region: options.region
-    };
-    const client = new AWS.KMS(config);
-
-    const kmsEnv = KMSEnv.create(client);
-    await kmsEnv.init(keyId, path.resolve(file));
+    await client.init(keyId, path.resolve(file));
 };
 
-const runAdd = async(entry, file, options) => {
+const runAdd = async(client, entry, file) => {
     assert.string(file, 'Must provide file');
     assert.string(entry, 'Must provide pair');
 
-    const config = {
-        apiVersion: '2014-11-01',
-        accessKeyId: options.accessKeyId,
-        secretAccessKey: options.secretAccessKey,
-        region: options.region
-    };
-    const client = new AWS.KMS(config);
-
-    const kmsEnv = KMSEnv.create(client);
-    await kmsEnv.add(entry, path.resolve(file));
+    await client.add(entry, path.resolve(file));
 };
 
-const runDecrypt = async(options) => {
-    const config = {
-        apiVersion: '2014-11-01',
-        accessKeyId: options.accessKeyId,
-        secretAccessKey: options.secretAccessKey,
-        region: options.region
-    };
-    const client = new AWS.KMS(config);
-
-    const kmsEnv = KMSEnv.create(client);
-    const output = await kmsEnv.decrypt(process.env);
+const runDecrypt = async(client) => {
+    const output = await client.decrypt(process.env);
     console.log(output);
 };
 
-const runShow = async(file, options) => {
+const runShow = async(client, file) => {
     assert.string(file, 'Must provide file to show');
-    const config = {
-        apiVersion: '2014-11-01',
-        accessKeyId: options.accessKeyId,
-        secretAccessKey: options.secretAccessKey,
-        region: options.region
-    };
-    const client = new AWS.KMS(config);
-
-    const kmsEnv = KMSEnv.create(client);
-    const output = await kmsEnv.show(path.resolve(file));
+    const output = await client.show(path.resolve(file));
     console.log(output);
 };
 
@@ -116,16 +93,16 @@ program
     .command('init [keyId] [file]')
     .description('Initialize an environment variable file with provided CMK Id')
     .action((keyId, file) => {
-        const options = exitIfFailed(getOptions, program);
-        exitOnFailedPromise(runInit(keyId, file, options));
+        const client = createClient(program);
+        exitOnFailedPromise(runInit(client, keyId, file));
     });
 
 program
     .command('add [entry] [file]')
     .description('Adds environment variable to file after encrypting the value')
     .action((entry, file) => {
-        const options = exitIfFailed(getOptions, program);
-        exitOnFailedPromise(runAdd(entry, file, options));
+        const client = createClient(program);
+        exitOnFailedPromise(runAdd(client, entry, file));
     });
 
 program
@@ -133,16 +110,16 @@ program
     .description('Decrypts secure environment variables and generates a bash export for each. ' +
         'Can be used with bash eval command to do in place decryption of env variables')
     .action(() => {
-        const options = exitIfFailed(getOptions, program);
-        exitOnFailedPromise(runDecrypt(options));
+        const client = createClient(program);
+        exitOnFailedPromise(runDecrypt(client));
     });
 
 program
     .command('show [file]')
     .description('Show the contents of the env file decrypting all secure vars. Warning: Only use for debugging!')
     .action(file => {
-        const options = exitIfFailed(getOptions, program);
-        exitOnFailedPromise(runShow(file, options));
+        const client = createClient(program);
+        exitOnFailedPromise(runShow(client, file));
     });
 
 program.parse(process.argv);
