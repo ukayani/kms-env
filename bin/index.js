@@ -77,6 +77,35 @@ const runAdd = async(entry, file, options) => {
     await kmsEnv.add(entry, path.resolve(file));
 };
 
+const runDecrypt = async(options) => {
+    const config = {
+        apiVersion: '2014-11-01',
+        accessKeyId: options.accessKeyId,
+        secretAccessKey: options.secretAccessKey,
+        region: options.region
+    };
+    const client = new AWS.KMS(config);
+
+    const kmsEnv = KMSEnv.create(client);
+    const output = await kmsEnv.decrypt(process.env);
+    console.log(output);
+};
+
+const runShow = async(file, options) => {
+    assert.string(file, 'Must provide file to show');
+    const config = {
+        apiVersion: '2014-11-01',
+        accessKeyId: options.accessKeyId,
+        secretAccessKey: options.secretAccessKey,
+        region: options.region
+    };
+    const client = new AWS.KMS(config);
+
+    const kmsEnv = KMSEnv.create(client);
+    const output = await kmsEnv.show(path.resolve(file));
+    console.log(output);
+};
+
 program
     .version(pkg.version)
     .option('-k, --access-key-id <id>', 'AWS Access key ID. Env: $AWS_ACCESS_KEY_ID')
@@ -97,6 +126,23 @@ program
     .action((entry, file) => {
         const options = exitIfFailed(getOptions, program);
         exitOnFailedPromise(runAdd(entry, file, options));
+    });
+
+program
+    .command('decrypt')
+    .description('Decrypts secure environment variables and generates a bash export for each. ' +
+        'Can be used with bash eval command to do in place decryption of env variables')
+    .action(() => {
+        const options = exitIfFailed(getOptions, program);
+        exitOnFailedPromise(runDecrypt(options));
+    });
+
+program
+    .command('show [file]')
+    .description('Show the contents of the env file decrypting all secure vars. Warning: Only use for debugging!')
+    .action(file => {
+        const options = exitIfFailed(getOptions, program);
+        exitOnFailedPromise(runShow(file, options));
     });
 
 program.parse(process.argv);
