@@ -7,7 +7,7 @@ const assert = require('assert-plus');
 const program = require('commander');
 const chalk = require('chalk');
 const AWS = require('aws-sdk');
-const KMS = require('../lib').KMS;
+const KMSEnv = require('../lib').KMSEnv;
 
 const showHelp = () => {
     program.outputHelp(chalk.blue);
@@ -45,14 +45,15 @@ const getParams = (options) => {
 const run = async(params) => {
 
     const config = {
-        apiVersion: '2014-11-13',
+        apiVersion: '2014-11-01',
         accessKeyId: params.accessKeyId,
         secretAccessKey: params.secretAccessKey,
         region: params.region
     };
     const client = new AWS.KMS(config);
 
-    const kms = KMS.create(client);
+    const kmsEnv = KMSEnv.create(client);
+    await kmsEnv.init('alias/ecs', path.resolve('./test.env'));
 };
 
 program
@@ -62,9 +63,9 @@ program
     .option('-r, --region <region>', 'AWS Region. Env: $AWS_DEFAULT_REGION');
 
 program
-    .command('encrypt [pair]')
+    .command('encrypt [key] [data]')
     .description('Encrypt environment variables and add to a file')
-    .action((pair) => {
+    .action((key, data) => {
         const params = exitIfFailed(getParams, program);
         run(params);
     });

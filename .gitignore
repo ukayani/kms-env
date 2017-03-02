@@ -103,3 +103,4 @@ atlassian-ide-plugin.xml
 style.html
 lint.html
 tmp
+*.env
