@@ -1,4 +1,4 @@
-# KMS Env
+# KMS Env ![Build Status](https://travis-ci.org/ukayani/kms-env.svg?branch=master)
 
 A tool used to encrypt environment and decrypt environment variables
 using KMS to support passing of encrypted environment variables to
