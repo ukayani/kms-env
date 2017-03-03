@@ -15,7 +15,38 @@ docker container in a secure manner, this tool aims to help.
 
 # How it works
 
-### todo: configure AWS credentials
+## AWS Setup
+
+1. Create a CMK in AWS. IAM > Encryption Keys
+2. Give a user or role access to this key via the key's policy
+
+By default, the tool will use the default credential chain for AWS.
+
+You can specify Access Keys and Secret Access keys via Environment variables, or cli arguments.
+If you are running the tool on an EC2 instance, the instance profile will be used.
+
+### Usage
+
+```bash
+Usage: kms-env [options] [command]
+
+
+  Commands:
+
+    init [keyId] [file]      Initialize an environment variable file with provided CMK Id
+    add [file] [entries...]  Adds environment variable to file after encrypting the value
+    decrypt                  Decrypts secure environment variables and generates a bash export for each. Can be used with bash eval command to do in place decryption of env variables
+    show [file]              Show the contents of the env file decrypting all secure vars. Warning: Only use for debugging!
+
+  Options:
+
+    -h, --help                        output usage information
+    -V, --version                     output the version number
+    -k, --access-key-id <id>          AWS Access key ID. Env: $AWS_ACCESS_KEY_ID
+    -s, --secret-access-key <secret>  AWS Secret Access Key. Env: $AWS_SECRET_ACCESS_KEY
+    -r, --region <region>             AWS Region. Env: $AWS_DEFAULT_REGION
+
+```
 
 ## Initializing an env file
 
