@@ -8,6 +8,7 @@ const program = require('commander');
 const chalk = require('chalk');
 const AWS = require('aws-sdk');
 const KMSEnv = require('../lib').KMSEnv;
+const fs = require('../lib/file.utils');
 
 const showHelp = () => {
   program.outputHelp(chalk.blue);
@@ -52,7 +53,7 @@ const createClient = (program) => {
     region: options.region
   };
   const client = new AWS.KMS(config);
-  return KMSEnv.create(client);
+  return KMSEnv.create(client, fs);
 };
 
 const runInit = async(client, keyId, file) => {
