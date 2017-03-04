@@ -84,7 +84,7 @@ program
   .version(pkg.version)
   .option('-k, --access-key-id <id>', 'AWS Access key ID. Env: $AWS_ACCESS_KEY_ID')
   .option('-s, --secret-access-key <secret>', 'AWS Secret Access Key. Env: $AWS_SECRET_ACCESS_KEY')
-  .option('-r, --region <region>', 'AWS Region. Env: $AWS_DEFAULT_REGION');
+  .option('-r, --region <region>', 'AWS Region. Env: $AWS_REGION');
 
 program
   .command('init [keyId] [file]')
