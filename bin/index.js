@@ -1,4 +1,4 @@
-#!/usr/bin/env node --harmony
+#!/usr/bin/env node
 
 'use strict';
 const pkg = require('../package.json');
@@ -56,30 +56,28 @@ const createClient = (program) => {
   return KMSEnv.create(client, fs);
 };
 
-const runInit = async(client, keyId, file) => {
+const runInit = (client, keyId, file) => {
 
   assert.string(keyId, 'Must provide keyId');
   assert.string(file, 'Must provide file');
 
-  await client.init(keyId, path.resolve(file));
+  return client.init(keyId, path.resolve(file));
 };
 
-const runAdd = async(client, file, entries) => {
+const runAdd = (client, file, entries) => {
   assert.string(file, 'Must provide file');
   assert.bool(Array.isArray(entries), 'Must provide entries to encrypt');
 
-  await client.add(path.resolve(file), entries);
+  return client.add(path.resolve(file), entries);
 };
 
-const runDecrypt = async(client) => {
-  const output = await client.decrypt(process.env);
-  console.log(output);
+const runDecrypt = (client) => {
+  return client.decrypt(process.env).then(console.log);
 };
 
-const runShow = async(client, file) => {
+const runShow = (client, file) => {
   assert.string(file, 'Must provide file to show');
-  const output = await client.show(path.resolve(file));
-  console.log(output);
+  return client.show(path.resolve(file)).then(console.log);
 };
 
 program
