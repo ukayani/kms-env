@@ -61,23 +61,23 @@ const runInit = (client, keyId, file) => {
   assert.string(keyId, 'Must provide keyId');
   assert.string(file, 'Must provide file');
 
-  return client.init(keyId, path.resolve(file));
+  return exitIfFailed(client.init, keyId, path.resolve(file));
 };
 
 const runAdd = (client, file, entries) => {
   assert.string(file, 'Must provide file');
   assert.bool(Array.isArray(entries), 'Must provide entries to encrypt');
 
-  return client.add(path.resolve(file), entries);
+  return exitIfFailed(client.add, path.resolve(file), entries);
 };
 
 const runDecrypt = (client) => {
-  return client.decrypt(process.env).then(console.log);
+  return exitIfFailed(client.decrypt, process.env).then(console.log);
 };
 
 const runShow = (client, file) => {
   assert.string(file, 'Must provide file to show');
-  return client.show(path.resolve(file)).then(console.log);
+  return exitIfFailed(client.show, path.resolve(file)).then(console.log);
 };
 
 program
