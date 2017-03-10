@@ -58,16 +58,21 @@ const createClient = (program) => {
 
 const runInit = (client, keyId, file) => {
 
-  assert.string(keyId, 'Must provide keyId');
-  assert.string(file, 'Must provide file');
-
+  const validate = () => {
+    assert.string(keyId, 'Must provide keyId');
+    assert.string(file, 'Must provide file');
+  };
+  exitIfFailed(validate);
   return exitIfFailed(client.init, keyId, path.resolve(file));
 };
 
 const runAdd = (client, file, entries) => {
-  assert.string(file, 'Must provide file');
-  assert.bool(Array.isArray(entries), 'Must provide entries to encrypt');
 
+  const validate = () => {
+    assert.string(file, 'Must provide file');
+    assert.bool(Array.isArray(entries), 'Must provide entries to encrypt');
+  };
+  exitIfFailed(validate);
   return exitIfFailed(client.add, path.resolve(file), entries);
 };
 
@@ -76,7 +81,10 @@ const runDecrypt = (client) => {
 };
 
 const runShow = (client, file) => {
-  assert.string(file, 'Must provide file to show');
+  const validate = () => {
+    assert.string(file, 'Must provide file to show');
+  };
+  exitIfFailed(validate);
   return exitIfFailed(client.show, path.resolve(file)).then(console.log);
 };
 
