@@ -52,6 +52,12 @@ const createClient = (program) => {
     secretAccessKey: options.secretAccessKey,
     region: options.region
   };
+
+  if (options.profile) {
+    // configure the AWS profile if they specified it via options
+    process.env.AWS_PROFILE = options.profile;
+  }
+
   const client = new AWS.KMS(config);
   return KMSEnv.create(client, fs);
 };
@@ -92,7 +98,8 @@ program
   .version(pkg.version)
   .option('-k, --access-key-id <id>', 'AWS Access key ID. Env: $AWS_ACCESS_KEY_ID')
   .option('-s, --secret-access-key <secret>', 'AWS Secret Access Key. Env: $AWS_SECRET_ACCESS_KEY')
-  .option('-r, --region <region>', 'AWS Region. Env: $AWS_REGION');
+  .option('-r, --region <region>', 'AWS Region. Env: $AWS_REGION')
+  .option('-p, --profile <name>', 'AWS Credential profile to use');
 
 program
   .command('init [keyId] [file]')
