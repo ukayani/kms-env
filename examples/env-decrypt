@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# decrypt any encrypted environment variables using kms-env
+eval $(kms-env decrypt)
+
+# allow subsequent script to run
+exec "$@"
