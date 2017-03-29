@@ -131,14 +131,14 @@ The `env` file created by `kms-env` can be used with the `docker run` command us
 
 To use `kms-env` to securely pass env vars to a docker container, the container needs kms-env installed.
 
-** Example Dockerfile with node + kms-env **
+**Example Dockerfile with node + kms-env**
 
 An example docker file which has kms-env installed is provided at [Dockerfile](examples/Dockerfile)
 
 You can use this docker file as your base image for your application image if you are building a NodeJs application.
 If you are using a different platform (eg JVM) then you will also need to install the necessary dependencies for that platform.
 
-** How it works **
+**How it works**
 The docker file uses an `env-decrypt` bash entrypoint script, so it will first run `kms-env decrypt` and then run whatever is supplied as a command to `docker run`
 
 So, for example:
