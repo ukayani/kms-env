@@ -45,7 +45,7 @@ Usage: kms-env [options] [command]
     -k, --access-key-id <id>          AWS Access key ID. Env: $AWS_ACCESS_KEY_ID
     -s, --secret-access-key <secret>  AWS Secret Access Key. Env: $AWS_SECRET_ACCESS_KEY
     -r, --region <region>             AWS Region. Env: $AWS_DEFAULT_REGION
-
+    -p, --profile <name>              AWS Credential profile to use
 ```
 
 ## Initializing an env file
