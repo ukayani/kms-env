@@ -6,7 +6,6 @@ const path = require('path');
 const assert = require('assert-plus');
 const program = require('commander');
 const chalk = require('chalk');
-const AWS = require('aws-sdk');
 const KMSEnv = require('../lib').KMSEnv;
 const fs = require('../lib/file.utils');
 
@@ -59,6 +58,8 @@ const createClient = (program) => {
     process.env.AWS_PROFILE = options.profile;
   }
 
+  // need to load the AWS sdk after we set the process env for AWS_PROFILE
+  const AWS = require('aws-sdk');
   const client = new AWS.KMS(config);
   return KMSEnv.create(client, fs);
 };
