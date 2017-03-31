@@ -39,7 +39,8 @@ const getOptions = (options) => {
   return {
     accessKeyId: accessKey,
     secretAccessKey: secretKey,
-    region
+    region,
+    profile: options.profile
   };
 };
 
