@@ -44,13 +44,23 @@ Usage: kms-env [options] [command]
     -V, --version                     output the version number
     -k, --access-key-id <id>          AWS Access key ID. Env: $AWS_ACCESS_KEY_ID
     -s, --secret-access-key <secret>  AWS Secret Access Key. Env: $AWS_SECRET_ACCESS_KEY
-    -r, --region <region>             AWS Region. Env: $AWS_DEFAULT_REGION
+    -r, --region <region>             AWS Region. Env: $AWS_REGION
     -p, --profile <name>              AWS Credential profile to use
 ```
 
+**Exporting AWS Region**
+
+An AWS Region must be specified when running `kms-env`. It can be provided via the `--region` parameter or with the following export:
+
+```bash
+export AWS_REGION=us-east-1
+```
+
+The above command will set your region to `us-east-1`
+
 ## Initializing an env file
 
-To get started, you must create run the `init` command and specify
+To get started, you must run the `init` command and specify
 your KMS CMK ID or alias. You can find this in the AWS console: IAM > Encryption Keys
 
 ```bash
