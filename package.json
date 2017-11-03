@@ -1,6 +1,6 @@
 {
   "name": "kms-env",
-  "version": "0.2.16",
+  "version": "0.2.17",
   "description": "A tool for encrypting and decrypting env vars using AWS KMS",
   "main": "index.js",
   "bin": {
